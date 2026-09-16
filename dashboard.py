@@ -1,23 +1,31 @@
-import matplotlib.pyplot as plt
+import csv
+from datetime import datetime
 
-# Dados de exemplo - depois você troca pelos reais
-dias = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]
-toneladas = [1250, 1380, 1420, 1190, 1500, 980]
+print("=== DASHBOARD PRODUÇÃO - USINA ===")
+print("1 - Registrar produção do dia")
+print("2 - Ver total produzido")
+op = input("Opção: ")
 
-plt.figure(figsize=(8,5))
-plt.bar(dias, toneladas, color="#2e7d32")
-plt.title("Moagem Diária - Usina (toneladas)")
-plt.xlabel("Dia")
-plt.ylabel("Toneladas")
-plt.grid(axis="y", alpha=0.3)
+ARQUIVO = "producao.csv"
 
-for i, v in enumerate(toneladas):
-    plt.text(i, v+20, str(v), ha="center")
+if op == "1":
+    data = datetime.now().strftime("%d/%m/%Y")
+    toneladas = input("Toneladas de cana moída: ")
+    litros = input("Litros de álcool produzidos: ")
+    with open(ARQUIVO, "a", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow([data, toneladas, litros])
+    print("✓ Salvo!")
 
-plt.tight_layout()
-plt.savefig("moagem.png")
-print("Gráfico salvo como moagem.png")
-
-# Média
-media = sum(toneladas) / len(toneladas)
-print(f"Média semanal: {media:.0f} ton/dia")
+elif op == "2":
+    try:
+        total_ton = 0
+        total_litros = 0
+        with open(ARQUIVO, "r", encoding="utf-8") as f:
+            for row in csv.reader(f):
+                total_ton += float(row[1])
+                total_litros += float(row[2])
+        print(f"Total cana: {total_ton} ton")
+        print(f"Total álcool: {total_litros} litros")
+    except:
+        print("Nenhum dado ainda.")
