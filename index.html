@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Moagem - Usina</title>
+<style>
+body { font-family: Arial; max-width: 600px; margin: 20px auto; padding: 20px; }
+.bar { background: #2e7d32; color: white; padding: 8px; margin: 5px 0; border-radius: 4px; }
+input, button { padding: 10px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+button { background: #2e7d32; color: white; border: none; cursor: pointer; }
+</style>
+</head>
+<body>
+<h2>Dashboard Moagem - Usina</h2>
+<input type="text" id="dia" placeholder="Dia (ex: Seg)">
+<input type="number" id="ton" placeholder="Toneladas moídas">
+<button onclick="add()">Adicionar</button>
+<div id="grafico"></div>
+<p id="media"></p>
+
+<script>
+let dados = [];
+function add() {
+  const dia = document.getElementById('dia').value;
+  const ton = parseFloat(document.getElementById('ton').value);
+  if(!dia || !ton) { alert('Preencha dia e toneladas'); return; }
+  dados.push({dia, ton});
+  document.getElementById('dia').value = '';
+  document.getElementById('ton').value = '';
+  desenhar();
+}
+function desenhar() {
+  const max = Math.max(...dados.map(d => d.ton), 1);
+  let html = '';
+  let soma = 0;
+  dados.forEach(d => {
+    const largura = (d.ton / max * 100).toFixed(0);
+    html += `<div class="bar" style="width:${largura}%">${d.dia}: ${d.ton} ton</div>`;
+    soma += d.ton;
+  });
+  document.getElementById('grafico').innerHTML = html;
+  if(dados.length > 0) {
+    document.getElementById('media').innerHTML = `<b>Média: ${(soma/dados.length).toFixed(1)} ton/dia | Total: ${soma} ton</b>`;
+  }
+}
+</script>
+</body>
+</html>
